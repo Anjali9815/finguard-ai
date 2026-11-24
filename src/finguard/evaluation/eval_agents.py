@@ -4,35 +4,31 @@ Samples flagged transactions (half real fraud, half false alarms), runs the
 agent pipeline on each, and measures what the agents decided.
 
 Run from the project root:
-    python -m src.finguard.eval_agents --per-class 10
-    python -m src.finguard.eval_agents --per-class 10 --dry-run   # no API calls
+    python -m src.finguard.evaluation.eval_agents --per-class 10
+    python -m src.finguard.evaluation.eval_agents --per-class 10 --dry-run   # no API calls
 """
 import argparse
 import asyncio
 import json
 import os
 import uuid
-from pathlib import Path
 
 import pandas as pd
-from dotenv import load_dotenv
 
-from src.finguard.tools import ROOT, STORE, _config
-
-load_dotenv(ROOT / ".env")
-load_dotenv(ROOT / "finguard_agent" / ".env")
+from src.finguard.agents.tools import _config
+from src.finguard.config import REPORTS_DIR, SCORED_STORE  # also loads .env
 
 if not (os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")):
     raise SystemExit("No API key found. Put GOOGLE_API_KEY=... in .env")
 
 APP = "finguard_eval"
 USER = "evaluator"
-OUT = ROOT / "reports" / "agent_eval.csv"
+OUT = REPORTS_DIR / "agent_eval.csv"
 
 
 def sample_cases(per_class: int, seed: int = 42) -> pd.DataFrame:
     """Flagged test transactions: per_class real frauds + per_class false alarms."""
-    df = pd.read_parquet(STORE, columns=["trans_num", "split", "is_fraud", "fraud_prob", "amt", "category"])
+    df = pd.read_parquet(SCORED_STORE, columns=["trans_num", "split", "is_fraud", "fraud_prob", "amt", "category"])
     flagged = df[(df.split == "test") & (df.fraud_prob >= _config()["threshold"])]
     fraud = flagged[flagged.is_fraud == 1].sample(per_class, random_state=seed)
     legit = flagged[flagged.is_fraud == 0].sample(per_class, random_state=seed)
@@ -107,7 +103,7 @@ if __name__ == "__main__":
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     if a.out:
-        OUT = ROOT / "reports" / a.out
+        OUT = REPORTS_DIR / a.out
 
     cases = sample_cases(a.per_class, seed=a.seed)
     if a.dry_run:

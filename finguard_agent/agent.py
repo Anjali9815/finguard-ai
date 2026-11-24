@@ -18,7 +18,7 @@ from google.adk.agents import Agent, SequentialAgent
 from google.adk.models.google_llm import Gemini
 from google.genai import types
 
-from src.finguard.tools import (
+from src.finguard.agents.tools import (
     explain_risk_factors,
     get_card_history,
     get_transaction_details,

@@ -11,17 +11,14 @@ Design rules:
   * Every tool returns JSON-safe dicts (no numpy / pandas types).
 """
 import json
-import os
 from functools import lru_cache
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import xgboost as xgb
 
-ROOT = Path(os.environ.get("FINGUARD_ROOT", Path(__file__).resolve().parents[2]))
-MODELS = ROOT / "models"
-STORE = ROOT / "data" / "processed" / "transactions_scored.parquet"
+from src.finguard.config import MODELS_DIR as MODELS
+from src.finguard.config import SCORED_STORE as STORE
 
 
 # ----------------------------------------------------------------- loaders

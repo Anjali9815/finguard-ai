@@ -12,11 +12,8 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from xgboost import XGBClassifier
 
 from src.finguard.ml.features import build_features, NUMERIC_FEATURES, CATEGORICAL_FEATURES
-
-RAW, PROCESSED, MODELS = Path("data/raw"), Path("data/processed"), Path("models")
+from src.finguard.config import RAW_DIR as RAW, PROCESSED_DIR as PROCESSED, MODELS_DIR as MODELS, REVIEW_COST
 FEATURES = NUMERIC_FEATURES + CATEGORICAL_FEATURES
-REVIEW_COST = 10  # ASSUMPTION: dollars of analyst time per flagged transaction
-
 
 def load_and_build():
     cols = dict(index_col=0, parse_dates=["trans_date_trans_time"])

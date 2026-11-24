@@ -10,3 +10,6 @@ models/
 reports/*.png
 .ipynb_checkpoints/
 venv/
+notebooks/.adk/
+*.db
+.ipynb_checkpoints/
