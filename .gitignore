@@ -1,0 +1,11 @@
+.env
+.adk/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+**/.env
+data/
+models/
+reports/*.png
+.ipynb_checkpoints/
