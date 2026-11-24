@@ -9,3 +9,4 @@ data/
 models/
 reports/*.png
 .ipynb_checkpoints/
+venv/
